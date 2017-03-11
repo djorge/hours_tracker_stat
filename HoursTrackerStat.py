@@ -25,7 +25,7 @@ for line, row in enumerate(csv_reader):
         "SIBS","21/02/17 12:51","21/02/17 17:12","4,35","Mastercard pin offline autorizacoes  Recibo Bits","ARCTIC - Construction - Suporte interno/externo sem SW","","","",""
     '''
     if line >2:
-        print("line %d".format(line))
+        print("line {} ".format(line))
         job = row[0]
         clockedIn = row[1]
         clockedOut = row[2]
@@ -34,6 +34,8 @@ for line, row in enumerate(csv_reader):
         tags     = row[5]
         print ('job:{} clockedIn:{}, clockedOut:{} , duration:{} , comments:{} , tags:{}clockedIn '.format(job, clockedIn, clockedOut, duration, comments, tags))
         week.add(job, clockedIn, clockedOut, duration, comments, tags)
+    else:
+        print(row)
         
 #print final objects
 print("================================")
