@@ -3,9 +3,9 @@ import datetime
 class myutil:
     @staticmethod
     def print_map(d):
-        print "{:<8} {:<10}".format('Tag','Tuple Hours')
+        print("{:<8} {:<10}".format('Tag','Tuple Hours'))
         for k, v in d.iteritems():            
-            print "{:<8}  {:<10}".format(k, v)
+            print("{:<8}  {:<10}".format(k, v))
             
 #from datetime import datetime
 #from datetime import timedelta
@@ -37,11 +37,11 @@ class DayTracker:
         elif dur_frac <= .99:
             dur_frac = .0
             
-        print "dur_int: %d, dur_frac: %f"%(dur_int, dur_frac)
+        print("dur_int:{} , dur_frac:{}  ".format(dur_int, dur_frac))
         return dur_int + dur_frac
         
     def add(self, clockedIn, clockedOut, weekday, duration, tags, comments):
-        print "add for weekday %d"%(weekday)
+        print("add for weekday {} ) ".format(weekday))
         self.currentDuration = self.roundDuration(duration)
         self.dayTimeDuration += self.currentDuration
         print "accumulate duration %f"%(self.dayTimeDuration)

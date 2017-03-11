@@ -36,4 +36,4 @@ class WeekTracker:
          #   print "%d, %f" %(idx, day.dayTimeDuration)
         print (self.weekTotalTime)
         for idx, day in self.weekDays.iteritems():
-            print "idx: %d total time:%f" % (idx,day.dayTimeDuration)
+            print("idx: {} total time:{}".format(idx,day.dayTimeDuration))
