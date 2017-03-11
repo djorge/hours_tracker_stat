@@ -44,9 +44,9 @@ class DayTracker:
         print("add for weekday {} ) ".format(weekday))
         self.currentDuration = self.roundDuration(duration)
         self.dayTimeDuration += self.currentDuration
-        print "accumulate duration %f"%(self.dayTimeDuration)
+        print ("accumulate duration {} ".format(self.dayTimeDuration))
         itemList = (weekday, self.currentDuration, tags, comments)
-        print "tags: %r" % (tags)        
+        print("tags: {} ".format(tags))        
         if len(tags) >0:
             if tags in self.tags_duration.keys():
                 self.tags_duration[tags] += int(self.currentDuration)
@@ -56,7 +56,7 @@ class DayTracker:
             self.comments[tags] = comments
         
         self.listItems.append(itemList)
-        print self.listItems
+        print(self.listItems)
         self.workDay = weekday
         datetimeIn = datetime.datetime.strptime(clockedIn, '%d/%m/%y %H:%M')
         datetimeOut = datetime.datetime.strptime(clockedOut, '%d/%m/%y %H:%M')
