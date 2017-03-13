@@ -5,7 +5,6 @@ class WeekTracker:
         self.weekJob = None    
         #semana 1 a semana 4    
         self.weekNumber = 0       
-    
         self.weekDays = {0 : DayTracker(),
                 1 : DayTracker(),
                 2 : DayTracker(),
@@ -36,4 +35,4 @@ class WeekTracker:
          #   print "%d, %f" %(idx, day.dayTimeDuration)
         print (self.weekTotalTime)
         for idx, day in self.weekDays.iteritems():
-            print("idx: {} total time:{}".format(idx,day.dayTimeDuration))
+            print("idx: {} total time:{} remaining {} ".format(idx,day.dayTimeDuration, day.remainingHours))
