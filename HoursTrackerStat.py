@@ -25,8 +25,8 @@ for line, row in enumerate(csv_reader):
         "Job","Clocked In","Clocked Out","Duration","Comment","Tags","Breaks","Adjustments","TotalTimeAdjustment","TotalEarningsAdjustment"
         "SIBS","21/02/17 12:51","21/02/17 17:12","4,35","Mastercard pin offline autorizacoes  Recibo Bits","ARCTIC - Construction - Suporte interno/externo sem SW","","","",""
     '''
-    if line >2:
-        print("line %d".format(line))
+    if line >1:
+        print("line {} ".format(line))
         job = row[0]
         clockedIn = row[1]
         clockedOut = row[2]
