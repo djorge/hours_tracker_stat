@@ -22,6 +22,8 @@ class DayTracker:
         #tags_time[tag] = [(begin_time, end_time)]
         self.tags_time = {}
         self.comments = {}
+        self.closed = False
+        self.remainingHours = 8.00
         
     def roundDuration(self, duration):
         ind_d = float(duration.replace(',','.'))
@@ -44,7 +46,8 @@ class DayTracker:
         print("add for weekday {} ) ".format(weekday))
         self.currentDuration = self.roundDuration(duration)
         self.dayTimeDuration += self.currentDuration
-        print ("accumulate duration {} ".format(self.dayTimeDuration))
+        self.remainingHours -=self.currentDuration
+        print ("accumulate duration {} remaining {}".format(self.dayTimeDuration,self.remainingHours))
         itemList = (weekday, self.currentDuration, tags, comments)
         print("tags: {} ".format(tags))        
         if len(tags) >0:
