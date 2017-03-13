@@ -35,6 +35,8 @@ for line, row in enumerate(csv_reader):
         tags     = row[5]
         print ('job:{} clockedIn:{}, clockedOut:{} , duration:{} , comments:{} , tags:{}clockedIn '.format(job, clockedIn, clockedOut, duration, comments, tags))
         week.add(job, clockedIn, clockedOut, duration, comments, tags)
+    else:
+        print(row)
         
 #print final objects
 print("================================")
