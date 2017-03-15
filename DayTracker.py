@@ -7,6 +7,28 @@ class myutil:
         print("{:<8} {:<10}".format('Tag','Tuple Hours'))
         for k, v in d.iteritems():            
             print("{:<8}  {:<10}".format(k, v))
+    @staticmethod     
+    def DateTimeToFloatRounded(DateTimeIn):
+        '''
+        Converts a DateTime (04:45) to a float (4.75)
+        '''
+        print("[DateTimeToFloatRounded] DateTimeIn:{} ".format(DateTimeIn))        
+        
+        dur_frac =  DateTimeIn.minute/60.0
+        dur_int = DateTimeIn.hour
+        
+        if dur_frac < .25:
+            dur_frac = 0
+        elif dur_frac < .50:
+            dur_frac = .25
+        elif dur_frac < .75:
+            dur_frac = .50
+        elif dur_frac <= .99:
+            dur_frac = .0
+            
+        print("[DateTimeToFloatRounded] dur_int:{} , dur_frac:{}  ".format(dur_int, dur_frac))
+        return dur_int + dur_frac
+        
             
 class DayTracker:       
     def __init__(self):
@@ -28,6 +50,13 @@ class DayTracker:
         self.clokOutChanged = False
         self.calcCheckOut = 0
         self.deltaAdded = 0
+        self.newDatetimeIn = 0
+        
+        #used for calcForXHourMinute
+        self.calcXWorkTimeTarget = 0
+        self.calcXLunchDuration = 0
+        self.calcXCheckin = 0
+        self.calcXCheckOut = 0
         
     def roundDuration(self, duration):
         print("........................")
@@ -90,6 +119,9 @@ class DayTracker:
         self.closeForHours()
         
     def calcCheckoutHour(self, checkIn, hoursTarget, minuteTarget):  
+        '''
+        Calc checkout time wih given checkin and offset
+        '''
         # checkOut = delta = checkIn + (hoursTarget, minuteTarget) 
         #clockedOut time
         #print("old checkout {} offset hours {}, minutes {}".format(self.lastDateTimeOut, hoursTarget, minuteTarget))
@@ -98,12 +130,31 @@ class DayTracker:
             self.newDatetimeIn = datetime.datetime.strptime(checkIn, '%H:%M')
             self.calcCheckOut = self.newDatetimeIn + self.deltaAdded
         else:
+            self.newDatetimeIn = 0
             self.calcCheckOut = self.lastDateTimeOut + self.deltaAdded
         #self.dayTotalTimeRounded e nao self.dayTotalTime porque ja vem arredondado
         self.dayTotalTimeRounded += hoursTarget +(minuteTarget/60)
-        self.remainingHours = 8 - self.dayTotalTimeRounded
-        #print("with offset {}".format(self.lastDateTimeOut + self.deltaAdded))
+        self.remainingHours = 8 - self.dayTotalTimeRounded        
         self.clokOutChanged = True        
+        
+    def calcForXHourMinute(self, checkinArriveDate, lunchDurationHour,lunchDurationMinutes, hoursTarget, minuteTarget):
+        '''
+            Calc checkout time with given checkin Arrive Date and lunch duration for X hour and minute target work time
+            "Which is my clockOut time if i arrive a '09:30' and lunch time is 45 minutes and i have to do '8:45' of work time?"
+        '''
+        print("->calcForXHourMinute({},{},{},{},{})".format(checkinArriveDate, lunchDurationHour,lunchDurationMinutes, hoursTarget, minuteTarget ))
+        #dayTotalTime must be 0 which means day is totally empty        
+        self.calcXWorkTimeTarget = timedelta(hours = hoursTarget, minutes = minuteTarget )
+        self.calcXLunchDuration = timedelta(hours = lunchDurationHour, minutes = lunchDurationMinutes )
+        self.calcXCheckin = datetime.datetime.strptime(checkinArriveDate, '%H:%M')
+        self.calcXCheckOut =  self.calcXCheckin + self.calcXLunchDuration + self.calcXWorkTimeTarget 
+        self.calcXCheckOutFloat =  myutil.DateTimeToFloatRounded(self.calcXCheckOut)
+        #update dayTotalTime (float datatype)        
+        #print("->{}".format(self.dayTotalTimeRounded))
+        self.dayTotalTimeRounded += hoursTarget +(minuteTarget/60)
+        #print("->{}".format(self.dayTotalTimeRounded))
+        self.remainingHours = 8 - self.dayTotalTimeRounded   
+        
         
     def __str__(self):
         return "Total time worked: {0}".format(self.dayTotalTime)
