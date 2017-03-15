@@ -1,4 +1,5 @@
 import datetime
+from datetime import timedelta
 
 class myutil:
     @staticmethod
@@ -7,11 +8,10 @@ class myutil:
         for k, v in d.iteritems():            
             print("{:<8}  {:<10}".format(k, v))
             
-#from datetime import datetime
-#from datetime import timedelta
 class DayTracker:       
     def __init__(self):
-        self.dayTimeDuration = 0
+        self.dayTotalTime = 0
+        self.dayTotalTimeRounded = 0
         self.workDay = -1
         self.currentDuration = 0
         
@@ -22,11 +22,17 @@ class DayTracker:
         #tags_time[tag] = [(begin_time, end_time)]
         self.tags_time = {}
         self.comments = {}
-        self.closed = False
         self.remainingHours = 8.00
+        self.lastClockOut = 0
+        
+        self.clokOutChanged = False
+        self.calcCheckOut = 0
+        self.deltaAdded = 0
         
     def roundDuration(self, duration):
-        ind_d = float(duration.replace(',','.'))
+        print("........................")
+        print(duration)
+        ind_d = duration#float(duration.replace(',','.'))
         dur_frac =  round(ind_d%1,2)
         dur_int = int(ind_d)
         
@@ -43,11 +49,10 @@ class DayTracker:
         return dur_int + dur_frac
         
     def add(self, clockedIn, clockedOut, weekday, duration, tags, comments):
-        print("add for weekday {} ) ".format(weekday))
-        self.currentDuration = self.roundDuration(duration)
-        self.dayTimeDuration += self.currentDuration
-        self.remainingHours -=self.currentDuration
-        print ("accumulate duration {} remaining {}".format(self.dayTimeDuration,self.remainingHours))
+        print("[D] add for weekday {}, duration: {} ".format(weekday, duration))
+        #self.currentDuration = self.roundDuration(duration)
+        self.dayTotalTime += float(duration.replace(',','.'))
+        print ("accumulate duration {} remaining {}".format(self.dayTotalTime,self.remainingHours))
         itemList = (weekday, self.currentDuration, tags, comments)
         print("tags: {} ".format(tags))        
         if len(tags) >0:
@@ -57,7 +62,7 @@ class DayTracker:
                 self.tags_duration[tags] = int(self.currentDuration)
         if comments is not None:
             self.comments[tags] = comments
-        
+            
         self.listItems.append(itemList)
         print(self.listItems)
         self.workDay = weekday
@@ -66,13 +71,41 @@ class DayTracker:
         if tags not in self.tags_time.keys():            
             self.tags_time[tags] = []            
         self.tags_time[tags].append((datetimeIn.hour,datetimeIn.minute,datetimeOut.hour,datetimeOut.minute))
-        
+        self.lastDateTimeOut = datetimeOut
         #myutil.print_map(self.tags_time)
         
     def countItems(self):
-        return len(listItems)   
+        return len(listItems)
 
+    def closeForHours(self):
+        self.dayTotalTimeRounded = self.roundDuration(self.dayTotalTime)
+        self.remainingHours = 8 - self.dayTotalTimeRounded
+        
+    def addTime(self, timeDuration):
+        self.dayTotalTime += float(timeDuration);
+        self.closeForHours()
+        
+    def subtractTime(self, timeDuration):        
+        self.dayTotalTime -= float(timeDuration);
+        self.closeForHours()
+        
+    def calcCheckoutHour(self, checkIn, hoursTarget, minuteTarget):  
+        # checkOut = delta = checkIn + (hoursTarget, minuteTarget) 
+        #clockedOut time
+        #print("old checkout {} offset hours {}, minutes {}".format(self.lastDateTimeOut, hoursTarget, minuteTarget))
+        self.deltaAdded = timedelta(hours = hoursTarget, minutes = minuteTarget )        
+        if checkIn != "":
+            self.newDatetimeIn = datetime.datetime.strptime(checkIn, '%H:%M')
+            self.calcCheckOut = self.newDatetimeIn + self.deltaAdded
+        else:
+            self.calcCheckOut = self.lastDateTimeOut + self.deltaAdded
+        #self.dayTotalTimeRounded e nao self.dayTotalTime porque ja vem arredondado
+        self.dayTotalTimeRounded += hoursTarget +(minuteTarget/60)
+        self.remainingHours = 8 - self.dayTotalTimeRounded
+        #print("with offset {}".format(self.lastDateTimeOut + self.deltaAdded))
+        self.clokOutChanged = True        
+        
     def __str__(self):
-        return "Total time worked: {0}".format(self.dayTimeDuration)
+        return "Total time worked: {0}".format(self.dayTotalTime)
         
         

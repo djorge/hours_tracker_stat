@@ -2,20 +2,24 @@
 #HoursTrackerStat (Main)
 #WeekTracker week
 import csv
-import appex
+#import appex
 import codecs
 
 csv.register_dialect('HoursTtracker-csv', delimiter=',', quoting=csv.QUOTE_ALL)
 from WeekTracker import WeekTracker
 file_to_open='CSVExport.csv'
-if appex.is_running_extension():
+'''if appex.is_running_extension():
   file_paths = appex.get_file_paths()
   for i, file in enumerate(file_paths):
     if file.endswith('/CSVExport.csv'):
     	print(file)
     	file_to_open=file
+'''        
 print(file_to_open)
-csv_file = codecs.open(file_to_open,'r','utf-8')
+#for ios
+#csv_file = codecs.open(file_to_open,'r','utf-8')
+#for windows
+csv_file = open(file_to_open)
 #print(csv_file.read())
 csv_reader = csv.reader(csv_file,'HoursTtracker-csv')
 
@@ -40,4 +44,18 @@ for line, row in enumerate(csv_reader):
         
 #print final objects
 print("================================")
-week.print_data()         
+for day in (0,1,2,3,4):
+    week.weekDays[day].closeForHours()
+
+#week.weekDays[4].addTime("0.75")    
+week.print_data()
+
+#week.weekDays[0].addTime("0.75")
+#week.print_data() 
+
+#week.weekDays[0].addTime("-0.75")
+#week.print_data() 
+
+
+week.weekDays[4].calcCheckoutHour("12:55", 6, 0.25*60)
+week.print_data()
