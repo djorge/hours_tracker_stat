@@ -2,24 +2,24 @@
 #HoursTrackerStat (Main)
 #WeekTracker week
 import csv
-#import appex
+import appex
 import codecs
 
 csv.register_dialect('HoursTtracker-csv', delimiter=',', quoting=csv.QUOTE_ALL)
 from WeekTracker import WeekTracker
 file_to_open='CSVExport.csv'
-'''if appex.is_running_extension():
+if appex.is_running_extension():
   file_paths = appex.get_file_paths()
   for i, file in enumerate(file_paths):
     if file.endswith('/CSVExport.csv'):
     	print(file)
     	file_to_open=file
-'''        
+        
 print(file_to_open)
 #for ios
-#csv_file = codecs.open(file_to_open,'r','utf-8')
+csv_file = codecs.open(file_to_open,'r','utf-8')
 #for windows
-csv_file = open(file_to_open)
+#csv_file = open(file_to_open)
 #print(csv_file.read())
 csv_reader = csv.reader(csv_file,'HoursTtracker-csv')
 
@@ -48,7 +48,7 @@ for day in (0,1,2,3,4):
     week.weekDays[day].closeForHours()
 
 #week.weekDays[4].addTime("0.75")    
-week.print_data()
+#week.print_data()
 
 #week.weekDays[0].addTime("0.75")
 #week.print_data() 
@@ -56,6 +56,14 @@ week.print_data()
 #week.weekDays[0].addTime("-0.75")
 #week.print_data() 
 
-
-week.weekDays[4].calcCheckoutHour("12:55", 6, 0.25*60)
+    
+#week.weekDays[4].calcCheckoutHour("", 6, 0.25*60)
+#45 minutes lunch
+#target worktime = "9:15"
+week.weekDays[4].calcForXHourMinute("09:20", 0, 55, 9, 0.25*60)
+#week.weekDays[5].calcForXHourMinute("09:25", 0, 45, 8, 15)
 week.print_data()
+print("=======================================")
+weektest40 = WeekTracker()
+weektest40.calcFor40Hours("09:20", "09:20", "09:50", "09:20", "09:55", 0, 45)
+weektest40.print_data()
