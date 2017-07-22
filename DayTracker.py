@@ -72,7 +72,7 @@ class DayTracker:
         elif dur_frac < .75:
             dur_frac = .50
         elif dur_frac <= .99:
-            dur_frac = .0
+            dur_frac = .75
             
         print("dur_int:{} , dur_frac:{}  ".format(dur_int, dur_frac))
         return dur_int + dur_frac
