@@ -1,3 +1,4 @@
+#coding: utf-8
 import datetime
 from datetime import timedelta
 
@@ -36,6 +37,9 @@ class DayTracker:
         self.dayTotalTimeRounded = 0
         self.workDay = -1
         self.currentDuration = 0
+        self.dayDate = None
+        self.dayName = None
+        self.DayNameList= ['Segunda', 'Terça', 'Quarta','Quinta','Sexta','Sábado','Domingo']
         
         #{work, holiday, vacation, compensated}    
         self.listItems = []
@@ -74,7 +78,7 @@ class DayTracker:
         elif dur_frac <= .99:
             dur_frac = .75
             
-        print("dur_int:{} , dur_frac:{}  ".format(dur_int, dur_frac))
+        #print("dur_int:{} , dur_frac:{}  ".format(dur_int, dur_frac))
         return dur_int + dur_frac
         
     def add(self, clockedIn, clockedOut, weekday, duration, tags, comments):
@@ -96,6 +100,10 @@ class DayTracker:
         print(self.listItems)
         self.workDay = weekday
         datetimeIn = datetime.datetime.strptime(clockedIn, '%d/%m/%y %H:%M')
+        if self.dayDate is None:
+            self.dayDate = datetimeIn
+        if self.dayName is None:
+            self.dayName = self.DayNameList[self.dayDate.weekday()]
         datetimeOut = datetime.datetime.strptime(clockedOut, '%d/%m/%y %H:%M')
         if tags not in self.tags_time.keys():            
             self.tags_time[tags] = []            
@@ -158,5 +166,6 @@ class DayTracker:
         
     def __str__(self):
         return "Total time worked: {0}".format(self.dayTotalTime)
-        
-        
+    
+    def getDay(self):
+        return self.dayDate.day
