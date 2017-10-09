@@ -202,20 +202,20 @@ csv.register_dialect('HoursTtracker-csv', delimiter=',', quoting=csv.QUOTE_ALL)
 from WeekTracker import WeekTracker
 from MonthTracker import MonthTracker
 
-file_to_open='CSVExport_julho.csv'
+file_to_open='CSVExport_setembro.csv'
+        
+#for ios
 if appex.is_running_extension():
   file_paths = appex.get_file_paths()
   for i, file in enumerate(file_paths):
     if file.endswith('/CSVExport.csv'):
     	print(file)
     	file_to_open=file
-      
-print(file_to_open)
-#for ios
-#csv_file = codecs.open(file_to_open,'r','utf-8')
+csv_file = codecs.open(file_to_open,'r','utf-8')
 #for windows
-csv_file = open(file_to_open)
-#print(csv_file.read())
+#csv_file = open(file_to_open)
+#print(csv_file.read())       
+print(file_to_open)
 csv_reader = csv.reader(csv_file,'HoursTtracker-csv')
 
 month = None
@@ -276,20 +276,18 @@ while weekday < first_weekday:
   print('first_weekday:{} first_day_letter:{} current weekday:{}'.format(first_weekday, first_day_letter, weekday))
   celula_vazia(header_letter[str(weekday)],row)
   weekday+=1
-first =True
+
 while first_day < last_day:         
   first_weekday = first_day.weekday()  
   if first_weekday == 0:
-  	if not first:
-	    print('weekday:{} first_weekday:{}. Incrementing ROW'.format(weekday, first_weekday))    
-	    row+=2
-   	first = False
+    print('weekday:{} first_weekday:{}. Incrementing ROW'.format(weekday, first_weekday))    
+    row+=2
   print('first_weekday:{} row:{} letter:{}'.format(first_weekday,row, header_letter[str(first_weekday)]))
   print("day:{} DayName:{} dayTotalTimeRounded:{}".format(first_day,dayNameList[first_day.weekday()], month.getHoursOfDay(first_day)))
   month_day = month.getDayTracker(first_day)
   if month_day is not None:    
     if month_day.dayTotalTimeRounded > 0:
-       celula_ok(header_letter[str(first_weekday)],row,str(first_day.day))
+      celula_ok(header_letter[str(first_weekday)],row,str(first_day.day))
     elif date(first_day.year,first_day.month, first_day.day) in feriados:
       print('feriado detectado')
       celula_feriado(header_letter[str(first_weekday)],row,str(first_day.day))
