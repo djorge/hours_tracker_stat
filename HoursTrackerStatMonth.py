@@ -8,6 +8,7 @@ import codecs
 import calendar
 from datetime import timedelta, date
 from math import ceil
+import datetime
 #############################################
 #   EXCEL BEGIN
 #############################################
@@ -269,7 +270,7 @@ dayNameList= ['Segunda', 'Terça', 'Quarta','Quinta','Sexta','Sábado','Domingo'
 weekday = 0
 row = 5
 
-
+today = datetime.datetime.now()
 first_weekday = first_day.weekday()
 first_day_letter = header_letter[str(first_weekday)]
 while weekday < first_weekday:
@@ -291,6 +292,8 @@ while first_day < last_day:
     elif date(first_day.year,first_day.month, first_day.day) in feriados:
       print('feriado detectado')
       celula_feriado(header_letter[str(first_weekday)],row,str(first_day.day))
+    elif datetime.datetime(first_day.year,first_day.month, first_day.day) >= today:
+      celula_ok(header_letter[str(first_weekday)],row,str(first_day.day))
     else:
       print('ferias else')
       celula_ferias(header_letter[str(first_weekday)],row,str(first_day.day))
