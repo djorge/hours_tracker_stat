@@ -9,6 +9,7 @@ import calendar
 from datetime import timedelta, date
 from math import ceil
 import datetime
+import console
 #############################################
 #   EXCEL BEGIN
 #############################################
@@ -330,3 +331,4 @@ sheet['b2'].font = fonte_def
 excel_file = 'David Jorge - {}-{:02} {}.xlsx'.format(month.dt.year,month.dt.month, mes[str(month.dt.month)])
 print('excel_file:',excel_file)
 wb.save(excel_file)
+console.open_in(excel_file)
