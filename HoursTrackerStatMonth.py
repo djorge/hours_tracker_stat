@@ -10,17 +10,23 @@ from datetime import timedelta, date
 from math import ceil
 import datetime
 import console
+import os
+# verificar calendario
+from CalendarEvent import CalendarEvent
+from CalendarEvent import TipoFalta
+
 #############################################
 #   EXCEL BEGIN
 #############################################
 import openpyxl
 from openpyxl.styles import Font, Side, Border, Alignment, PatternFill
-
 import holidays
 feriados = holidays.Portugal()
 
 class TipoCelula:
     Cima, Baixo = range(2)
+
+copyfile = True    
 fill_ferias = PatternFill(fill_type='solid', start_color='7F7F7F', end_color='7F7F7F')
 
 fill_feriado = PatternFill(fill_type='solid', start_color='3A81FF', end_color='3A81FF')
@@ -125,6 +131,10 @@ def celula_ferias(celula_letra, celula_num, texto):
   celula(TipoCelula.Cima, celula_letra, celula_num, texto, fill_ferias)
   celula(TipoCelula.Baixo, celula_letra, celula_num+1, 'Ferias', fill_ferias)  
   
+def celula_dispensa(celula_letra, celula_num, texto):
+  celula(TipoCelula.Cima, celula_letra, celula_num, texto, fill_ferias)
+  celula(TipoCelula.Baixo, celula_letra, celula_num+1, 'Disoensa', fill_ferias)  
+  
 def celula_feriado(celula_letra, celula_num, texto):
   celula(TipoCelula.Cima, celula_letra, celula_num, texto, fill_feriado)
   celula(TipoCelula.Baixo, celula_letra, celula_num+1, 'Feriado', fill_feriado)    
@@ -204,15 +214,27 @@ csv.register_dialect('HoursTtracker-csv', delimiter=',', quoting=csv.QUOTE_ALL)
 from WeekTracker import WeekTracker
 from MonthTracker import MonthTracker
 
-file_to_open='CSVExport_setembro.csv'
+file_to_open='CSVExport-nov.csv'
         
 #for ios
 if appex.is_running_extension():
   file_paths = appex.get_file_paths()
   for i, file in enumerate(file_paths):
     if file.endswith('/CSVExport.csv'):
-    	print(file)
-    	file_to_open=file
+      if copyfile:
+        attachments = appex.get_attachments()
+        fmt = 'from HoursTracker_{:%Y_%m_%d_%H_%M_%S}.txt'
+        file_name = fmt.format(datetime.datetime.now())
+        
+        print(file_name)
+        with open(file_name, 'w') as out_file:
+            out_file.write(file)
+        print('{} bytes written to {}.'.format(len(file), file_name))
+        file_to_open=file_name
+        #exit()
+      else:
+        file_to_open=file
+  
 csv_file = codecs.open(file_to_open,'r','utf-8')
 #for windows
 #csv_file = open(file_to_open)
@@ -279,6 +301,12 @@ while weekday < first_weekday:
   celula_vazia(header_letter[str(weekday)],row)
   weekday+=1
 
+cal = CalendarEvent()
+'''
+cal.EventsFromDay(datetime.datetime(2017,9,4)))== TipoFalta.Ferias:
+	print('Férias')
+'''
+
 while first_day < last_day:         
   first_weekday = first_day.weekday()  
   if first_weekday == 0:
@@ -295,9 +323,11 @@ while first_day < last_day:
       celula_feriado(header_letter[str(first_weekday)],row,str(first_day.day))
     elif datetime.datetime(first_day.year,first_day.month, first_day.day) >= today:
       celula_ok(header_letter[str(first_weekday)],row,str(first_day.day))
-    else:
-      print('ferias else')
+    elif cal.EventsFromDay(datetime.datetime(first_day.year,first_day.month, first_day.day))== TipoFalta.Ferias:
       celula_ferias(header_letter[str(first_weekday)],row,str(first_day.day))
+    elif cal.EventsFromDay(datetime.datetime(first_day.year,first_day.month, first_day.day))== TipoFalta.Dispensa:
+      celula_dispensa(header_letter[str(first_weekday)],row,str(first_day.day))
+      
   elif first_weekday in [5,6]:
       celula_fds(header_letter[str(first_weekday)], row, str(first_day.day))
   first_day += a_day
