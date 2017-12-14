@@ -26,7 +26,6 @@ feriados = holidays.Portugal()
 class TipoCelula:
     Cima, Baixo = range(2)
 
-copyfile = True    
 fill_ferias = PatternFill(fill_type='solid', start_color='7F7F7F', end_color='7F7F7F')
 
 fill_feriado = PatternFill(fill_type='solid', start_color='3A81FF', end_color='3A81FF')
@@ -221,18 +220,6 @@ if appex.is_running_extension():
   file_paths = appex.get_file_paths()
   for i, file in enumerate(file_paths):
     if file.endswith('/CSVExport.csv'):
-      if copyfile:
-        attachments = appex.get_attachments()
-        fmt = 'from HoursTracker_{:%Y_%m_%d_%H_%M_%S}.txt'
-        file_name = fmt.format(datetime.datetime.now())
-        
-        print(file_name)
-        with open(file_name, 'w') as out_file:
-            out_file.write(file)
-        print('{} bytes written to {}.'.format(len(file), file_name))
-        file_to_open=file_name
-        #exit()
-      else:
         file_to_open=file
   
 csv_file = codecs.open(file_to_open,'r','utf-8')
@@ -321,25 +308,26 @@ while first_day < last_day:
     elif date(first_day.year,first_day.month, first_day.day) in feriados:
       print('feriado detectado')
       celula_feriado(header_letter[str(first_weekday)],row,str(first_day.day))
-    elif datetime.datetime(first_day.year,first_day.month, first_day.day) >= today:
-      celula_ok(header_letter[str(first_weekday)],row,str(first_day.day))
     elif cal.EventsFromDay(datetime.datetime(first_day.year,first_day.month, first_day.day))== TipoFalta.Ferias:
       celula_ferias(header_letter[str(first_weekday)],row,str(first_day.day))
     elif cal.EventsFromDay(datetime.datetime(first_day.year,first_day.month, first_day.day))== TipoFalta.Dispensa:
       celula_dispensa(header_letter[str(first_weekday)],row,str(first_day.day))
-      
+    elif datetime.datetime(first_day.year,first_day.month, first_day.day) >= today:
+      celula_ok(header_letter[str(first_weekday)],row,str(first_day.day))
   elif first_weekday in [5,6]:
       celula_fds(header_letter[str(first_weekday)], row, str(first_day.day))
+
   first_day += a_day
 
 #write empty cells until end of week
 last_weekday = last_day.weekday()
-while last_weekday < 7:
+while last_weekday < 7 and last_weekday>0:
   if last_weekday in [5,6]:
     celula_fds(header_letter[str(last_weekday)], row, '')
   else:
     celula_vazia(header_letter[str(last_weekday)],row)
   last_weekday+=1
+  
 mes={}
 mes['1']='Janeiro'
 mes['2']='FEvereiro'
