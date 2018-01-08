@@ -293,10 +293,10 @@ cal = CalendarEvent()
 cal.EventsFromDay(datetime.datetime(2017,9,4)))== TipoFalta.Ferias:
 	print('Férias')
 '''
-
 while first_day < last_day:         
-  first_weekday = first_day.weekday()  
-  if first_weekday == 0:
+  first_weekday = first_day.weekday()
+  # first_day.day >1: em janeiro de 2018 dia 1 calha no início da semana e nao deve incrementar  a linha
+  if first_weekday == 0 and first_day.day >1:
     print('weekday:{} first_weekday:{}. Incrementing ROW'.format(weekday, first_weekday))    
     row+=2
   print('first_weekday:{} row:{} letter:{}'.format(first_weekday,row, header_letter[str(first_weekday)]))
