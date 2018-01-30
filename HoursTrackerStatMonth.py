@@ -343,7 +343,7 @@ mes['11']='Novembro'
 mes['12']='Dezembro'
 
 fonte_def = Font(name = 'calibri', size= 16, bold= True)
-sheet['b2'].value =mes[str(month.dt.month)]+' 2017'
+sheet['b2'].value =mes[str(month.dt.month)]+' '+str(month.dt.year)
 sheet['b2'].font = fonte_def
 
 excel_file = 'David Jorge - {}-{:02} {}.xlsx'.format(month.dt.year,month.dt.month, mes[str(month.dt.month)])
