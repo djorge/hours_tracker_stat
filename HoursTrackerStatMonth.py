@@ -26,11 +26,15 @@ feriados = holidays.Portugal()
 class TipoCelula:
     Cima, Baixo = range(2)
 
+
+
 fill_ferias = PatternFill(fill_type='solid', start_color='7F7F7F', end_color='7F7F7F')
 
 fill_feriado = PatternFill(fill_type='solid', start_color='3A81FF', end_color='3A81FF')
 
 fill_fds = PatternFill(fill_type='solid', start_color='bcbcbc', end_color='bcbcbc')
+
+fill_dispensa = PatternFill(fill_type='solid', start_color='9494ff', end_color='9494ff')
 #
 thick = Side(border_style="thick", color ="000000")
 thin = Side(border_style="thin", color ="000000")
@@ -131,8 +135,8 @@ def celula_ferias(celula_letra, celula_num, texto):
   celula(TipoCelula.Baixo, celula_letra, celula_num+1, 'Ferias', fill_ferias)  
   
 def celula_dispensa(celula_letra, celula_num, texto):
-  celula(TipoCelula.Cima, celula_letra, celula_num, texto, fill_ferias)
-  celula(TipoCelula.Baixo, celula_letra, celula_num+1, 'Disoensa', fill_ferias)  
+  celula(TipoCelula.Cima, celula_letra, celula_num, texto, fill_dispensa)
+  celula(TipoCelula.Baixo, celula_letra, celula_num+1, 'Dispensa', fill_dispensa)  
   
 def celula_feriado(celula_letra, celula_num, texto):
   celula(TipoCelula.Cima, celula_letra, celula_num, texto, fill_feriado)
@@ -201,6 +205,7 @@ def test_excel():
 def get_month_range(start_date = None):
     if start_date is None:
         start_date = date.today()
+    start_date = start_date.replace(hour=0, minute=0, second=0, microsecond=0) # Returns a copy
     print ('startdate:{} '.format(start_date))
     start_date = start_date.replace(day = 1)        
     print ('startdate:{} '.format(start_date))
@@ -272,6 +277,7 @@ sheet = wb.get_active_sheet()
 header_excel()        
         
 a_day = timedelta(days=1)
+
 print(month.dt)
 first_day, last_day = get_month_range(month.dt)
 print('first_day:{} last_day:{}'.format(first_day,last_day))
@@ -280,7 +286,8 @@ dayNameList= ['Segunda', 'Terça', 'Quarta','Quinta','Sexta','Sábado','Domingo'
 weekday = 0
 row = 5
 
-today = datetime.datetime.now()
+today = datetime.datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) # Returns a copy
+print('today: {}'.format(today))
 first_weekday = first_day.weekday()
 first_day_letter = header_letter[str(first_weekday)]
 while weekday < first_weekday:
@@ -293,7 +300,8 @@ cal = CalendarEvent()
 cal.EventsFromDay(datetime.datetime(2017,9,4)))== TipoFalta.Ferias:
 	print('Férias')
 '''
-while first_day < last_day:         
+while first_day < last_day:     
+  print('first_day: {}'.format(first_day))    
   first_weekday = first_day.weekday()
   # first_day.day >1: em janeiro de 2018 dia 1 calha no início da semana e nao deve incrementar  a linha
   if first_weekday == 0 and first_day.day >1:
@@ -313,6 +321,8 @@ while first_day < last_day:
     elif cal.EventsFromDay(datetime.datetime(first_day.year,first_day.month, first_day.day))== TipoFalta.Dispensa:
       celula_dispensa(header_letter[str(first_weekday)],row,str(first_day.day))
     elif datetime.datetime(first_day.year,first_day.month, first_day.day) >= today:
+      
+      print('day ok {}'.format(first_day.day))
       celula_ok(header_letter[str(first_weekday)],row,str(first_day.day))
   elif first_weekday in [5,6]:
       celula_fds(header_letter[str(first_weekday)], row, str(first_day.day))
