@@ -22,6 +22,9 @@ import openpyxl
 from openpyxl.styles import Font, Side, Border, Alignment, PatternFill
 import holidays
 feriados = holidays.Portugal()
+custom_feriados=[]#holidays.HolidaysBase()
+#custom_feriados.append({"2018-06-13": "Cidade Lisboa"})
+custom_feriados.append(date(2018,6,13))
 
 class TipoCelula:
     Cima, Baixo = range(2)
@@ -315,6 +318,9 @@ while first_day < last_day:
       celula_ok(header_letter[str(first_weekday)],row,str(first_day.day))
     elif date(first_day.year,first_day.month, first_day.day) in feriados:
       print('feriado detectado')
+      celula_feriado(header_letter[str(first_weekday)],row,str(first_day.day))
+    elif date(first_day.year,first_day.month, first_day.day) in custom_feriados:
+      print('custom feriado detectado')
       celula_feriado(header_letter[str(first_weekday)],row,str(first_day.day))
     elif cal.EventsFromDay(datetime.datetime(first_day.year,first_day.month, first_day.day))== TipoFalta.Ferias:
       celula_ferias(header_letter[str(first_weekday)],row,str(first_day.day))
