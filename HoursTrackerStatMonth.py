@@ -227,7 +227,8 @@ file_to_open='CSVExport-nov.csv'
 if appex.is_running_extension():
   file_paths = appex.get_file_paths()
   for i, file in enumerate(file_paths):
-    if file.endswith('/CSVExport.csv'):
+    print file
+    if file.endswith('/CSVExport-SIBS.csv'):
         file_to_open=file
   
 csv_file = codecs.open(file_to_open,'r','utf-8')
