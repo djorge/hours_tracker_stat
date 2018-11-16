@@ -11,8 +11,8 @@ file_to_open='CSVExport.csv'
 if appex.is_running_extension():
   file_paths = appex.get_file_paths()
   for i, file in enumerate(file_paths):
-    if file.endswith('/CSVExport.csv'):
-    	print(file)
+    print('from appex:',file)
+    if file.endswith('/CSVExport-SIBS.csv'):	
     	file_to_open=file
         
 print(file_to_open)
@@ -46,7 +46,7 @@ for line, row in enumerate(csv_reader):
 print("================================")
 for day in (0,1,2,3,4):
     week.weekDays[day].closeForHours()
-
+week.print_data()
 #week.weekDays[4].addTime("0.75")    
 #week.print_data()
 
@@ -60,10 +60,11 @@ for day in (0,1,2,3,4):
 #week.weekDays[4].calcCheckoutHour("", 6, 0.25*60)
 #45 minutes lunch
 #target worktime = "9:15"
-week.weekDays[4].calcForXHourMinute("09:20", 0, 55, 9, 0.25*60)
+
+week.weekDays[4].calcForXHourMinute("09:30", 0, 45, 7, 15)
 #week.weekDays[5].calcForXHourMinute("09:25", 0, 45, 8, 15)
 week.print_data()
 print("=======================================")
-weektest40 = WeekTracker()
-weektest40.calcFor40Hours("09:20", "09:20", "09:50", "09:20", "09:55", 0, 45)
-weektest40.print_data()
+#weektest40 = WeekTracker()
+#weektest40.calcFor40Hours("09:15", "09:20", "09:50", "09:20", "09:55", 0, 45)
+#weektest40.print_data()
