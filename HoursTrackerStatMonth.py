@@ -24,7 +24,7 @@ import holidays
 feriados = holidays.Portugal()
 custom_feriados=[]#holidays.HolidaysBase()
 #custom_feriados.append({"2018-06-13": "Cidade Lisboa"})
-custom_feriados.append(date(2018,6,13))
+custom_feriados.append(date(datetime.datetime.now().year,6,13))
 
 class TipoCelula:
     Cima, Baixo = range(2)
